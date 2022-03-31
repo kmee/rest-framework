@@ -169,6 +169,7 @@ class DatamodelRegistryCase(
 
 class TransactionDatamodelRegistryCase(common.TransactionCase, DatamodelRegistryCase):
     """Adds Odoo Transaction in the base Datamodel TestCase"""
+    """Adds Odoo Transaction in the base Datamodel TestCase"""
 
     # pylint: disable=W8106
     @classmethod
