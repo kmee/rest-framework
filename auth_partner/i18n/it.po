@@ -1,0 +1,51 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* auth_partner
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 16.0\n"
+"Report-Msgid-Bugs-To: \n"
+"Last-Translator: Automatically generated\n"
+"Language-Team: none\n"
+"Language: it\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+
+#. module: auth_partner
+#: model:ir.model.fields.selection,name:auth_partner.selection__wizard_auth_partner_reset_password__delay__14-days
+msgid "14 Days"
+msgstr ""
+
+#. module: auth_partner
+#: model:ir.model.fields.selection,name:auth_partner.selection__wizard_auth_partner_reset_password__delay__2-days
+msgid "2-days"
+msgstr ""
+
+#. module: auth_partner
+#: model:ir.model.fields.selection,name:auth_partner.selection__wizard_auth_partner_reset_password__delay__6-hours
+msgid "6 Hours"
+msgstr ""
+
+#. module: auth_partner
+#: model:ir.model.fields.selection,name:auth_partner.selection__wizard_auth_partner_reset_password__delay__7-days
+msgid "7 Days"
+msgstr ""
+
+#. module: auth_partner
+#: model:mail.template,body_html:auth_partner.email_reset_password
+msgid ""
+"<div>\n"
+"            Hi <t t-out=\"object.partner_id.name or ''\"></t>\n"
+"            Click on the following link to reset your password\n"
+"            <a t-attf-href=\"https://example.org/password/reset?token={{ object.env.context['token']}}\" target=\"_blank\" style=\"color:#FFFFFF; text-decoration:none;\">Reset Password</a>\n"
+"            </div>\n"
+"        "
+msgstr ""
+
+#. module: auth_partner
+#: model:mail.template,body_html:auth_partner.email_validate_email
+msgid ""
+"<div>\n"
