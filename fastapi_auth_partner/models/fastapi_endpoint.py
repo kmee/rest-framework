@@ -1,0 +1,1 @@
+# Model para endpoints FastAPI
