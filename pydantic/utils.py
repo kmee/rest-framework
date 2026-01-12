@@ -1,7 +1,8 @@
 # Copyright 2021 ACSONE SA/NV
 # License LGPL-3.0 or later (http://www.gnu.org/licenses/lgpl.html)
 
-from typing import Any
+from types import UnionType
+from typing import Annotated, Any, Union, get_args, get_origin
 
 from odoo import fields, models
 
@@ -29,6 +30,56 @@ class PydanticOdooBaseModel(BaseModel):
     model_config = ConfigDict(
         from_attributes=True,
     )
+
+    @staticmethod
+    def _extract_types_from_union(field_type: Any) -> list[Any]:
+        """Extract types from a Union, Optional, Annotated or simple type.
+
+        Returns a list of types, excluding None.
+        """
+        if field_type is None:
+            return []
+
+        origin = get_origin(field_type)
+
+        # If it's Annotated, extract the annotated type (first argument)
+        if origin is Annotated:
+            args = get_args(field_type)
+            if args:
+                # Recursively process the annotated type
+                return PydanticOdooBaseModel._extract_types_from_union(args[0])
+            return []
+
+        # Check if it's a Union (Union[X, Y] or X | Y)
+        if origin is Union or origin is type(Union) or origin is UnionType:
+            # Extract Union arguments
+            args = get_args(field_type)
+            # Filter None and return remaining types
+            return [arg for arg in args if arg is not type(None)]
+
+        # Check if it's Optional (which is Union[T, None])
+        if origin is type(None) or field_type is type(None):
+            return []
+
+        # If it's neither Union nor Annotated, return the type directly
+        return [field_type]
+
+    @classmethod
+    def _field_accepts_int_type(cls, field_name: str) -> bool:
+        """Check if the field accepts int type (including in Unions).
+
+        Returns True if the field type is int or if any of the types
+        in a Union is int.
+        """
+        annotations = cls.__annotations__
+        if field_name not in annotations:
+            return False
+
+        field_type = annotations[field_name]
+        types = cls._extract_types_from_union(field_type)
+
+        # Check if any of the types is int
+        return any(t is int or t == int for t in types)
 
     @classmethod
     def model_validate(
@@ -68,9 +119,9 @@ class PydanticOdooBaseModel(BaseModel):
                 if field.type == "many2one":
                     if not value:
                         return None
-                    if issubclass(cls.__annotations__.get(info.field_name), int):
-                        # if field typing is an integer we return the .id
-                        # (not the odoo record)
+                    # If the field accepts int (including in Unions like Optional[int]),
+                    # return only the .id (not the complete odoo record)
+                    if cls._field_accepts_int_type(info.field_name):
                         return value.id
         return value
 
