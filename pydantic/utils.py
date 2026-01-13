@@ -123,6 +123,10 @@ class PydanticOdooBaseModel(BaseModel):
                     # return only the .id (not the complete odoo record)
                     if cls._field_accepts_int_type(info.field_name):
                         return value.id
+                if field.type == "many2many":
+                    if not value:
+                        return None
+                    return [item.id for item in value]
         return value
 
     @model_validator(mode="before")
