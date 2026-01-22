@@ -6,12 +6,11 @@
     "summary": """
         This addon allows you to define simple data models supporting
         serialization/deserialization""",
-    "version": "16.0.1.0.1",
+    "version": "18.0.1.0.1",
     "license": "LGPL-3",
     "development_status": "Beta",
     "author": "ACSONE SA/NV, " "Odoo Community Association (OCA)",
     "maintainers": ["lmignon"],
     "website": "https://github.com/OCA/rest-framework",
     "external_dependencies": {"python": ["marshmallow", "marshmallow-objects>=2.0.0"]},
-    "installable": False,
 }

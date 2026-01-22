@@ -9,7 +9,7 @@ from contextlib import ExitStack
 from marshmallow import INCLUDE
 
 from odoo.api import Environment
-from odoo.tools import LastOrderedSet, OrderedSet
+from odoo.tools.misc import LastOrderedSet, OrderedSet
 
 _logger = logging.getLogger(__name__)
 
