@@ -59,23 +59,33 @@ class TestFastapiAuthApiKey(TransactionCase):
                 "auth_api_key_ids": [(6, 0, cls.authorized_api_key.ids)],
             }
         )
+        cls.endpoint = cls.env["fastapi.endpoint"].create(
+            {
+                "name": "Api key endpoint",
+                "app": "demo",
+                "demo_auth_method": "api_key",
+                "root_path": "/test_fastapi_auth_api_key",
+                "auth_api_key_group_id": cls.authorized_api_key_group.id,
+            }
+        )
 
     def test_authenticated_auth_api_key(self):
         # An exception is raised when no api key is used
         with self.assertRaises(HTTPException) as error:
-            authenticated_auth_api_key(False, self.demo_env)
+            authenticated_auth_api_key(False, self.demo_env, self.endpoint)
         self.assertEqual(error.exception.detail, "No HTTP-API-KEY provided")
         # An exception is raised when no api key record is found
         with self.assertRaises(HTTPException) as error:
-            authenticated_auth_api_key("404", self.demo_env)
+            authenticated_auth_api_key("404", self.demo_env, self.endpoint)
         self.assertEqual(error.exception.detail, "The key 404 is not allowed")
-        # TODO enable this when we know how to filter keys based
-        # on endpoint's api key group.
-        # An exception is raised when unauthorized api key record is found
-        # with self.assertRaises(HTTPException) as error:
-        # authenticated_auth_api_key("not_authorized", self.demo_env)
+        # An exception is raised when the key is not in the endpoint group
+        with self.assertRaises(HTTPException) as error:
+            authenticated_auth_api_key(
+                self.unauthorized_api_key.key, self.demo_env, self.endpoint
+            )
+        self.assertEqual(error.exception.detail, "Unauthorized")
         result_key = authenticated_auth_api_key(
-            self.authorized_api_key.key, self.demo_env
+            self.authorized_api_key.key, self.demo_env, self.endpoint
         )
         self.assertEqual(result_key, self.authorized_api_key)
 
